@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>BotBot · 隐私政策 / Privacy Policy</title>
+<meta name="description" content="BotBot iOS 应用隐私政策（中英双语）。无自有后端，无数据追踪，数据仅存本机。" />
+<link rel="icon" type="image/svg+xml" href="./whale.svg" />
+<style>
+  :root {
+    --bg: #F6F8FF;
+    --surface: #FFFFFF;
+    --text: #0F172A;
+    --muted: #475569;
+    --subtle: #64748B;
+    --border: rgba(15, 23, 42, 0.09);
+    --accent: #3964FE;
+    --code-bg: #F1F5F9;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #080B14;
+      --surface: #121726;
+      --text: #F8FAFC;
+      --muted: #CBD5E1;
+      --subtle: #94A3B8;
+      --border: rgba(255, 255, 255, 0.10);
+      --accent: #6EA1FF;
+      --code-bg: #1E2538;
+    }
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "PingFang SC", "Hiragino Sans GB", "Helvetica Neue", sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.75;
+    padding: 36px 20px 64px;
+    -webkit-font-smoothing: antialiased;
+  }
+  main {
+    max-width: 820px;
+    margin: 0 auto;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 26px;
+    padding: 40px 44px;
+    box-shadow: 0 18px 48px rgba(15, 23, 42, 0.06);
+  }
+  .top-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 28px;
+    padding-bottom: 18px;
+    border-bottom: 1px solid var(--border);
+  }
+  .home-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    color: var(--text);
+    font-weight: 800;
+    font-size: 17px;
+  }
+  .home-link img {
+    width: 32px;
+    height: 32px;
+    border-radius: 9px;
+    background: #FFFFFF;
+  }
+  .jump {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--accent);
+    text-decoration: none;
+  }
+  .jump:hover { text-decoration: underline; }
+  h1 {
+    font-size: 30px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    margin-bottom: 8px;
+  }
+  .meta {
+    font-size: 14px;
+    color: var(--subtle);
+    margin-bottom: 24px;
+  }
+  h2 {
+    font-size: 19px;
+    font-weight: 750;
+    margin: 26px 0 10px;
+  }
+  p, li {
+    font-size: 15.5px;
+    color: var(--muted);
+  }
+  p { margin-bottom: 10px; }
+  ul { padding-left: 22px; margin-bottom: 12px; }
+  li { margin-bottom: 6px; }
+  code {
+    background: var(--code-bg);
+    padding: 2px 6px;
+    border-radius: 6px;
+    font-size: 13.5px;
+    font-family: "SF Mono", Menlo, monospace;
+  }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  hr {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 44px 0;
+  }
+  @media (max-width: 640px) {
+    main { padding: 26px 20px; }
+    h1 { font-size: 24px; }
+  }
+</style>
+</head>
+<body>
+<main>
+  <div class="top-bar">
+    <a class="home-link" href="./">
+      <img src="./whale.svg" alt="BotBot" />
+      <span>← BotBot 产品主页</span>
+    </a>
+    <a class="jump" href="#english">English Version ↓</a>
+  </div>
+
+  <article id="zh">
+    <h1>BotBot 隐私政策</h1>
+    <p class="meta">生效日期：2026 年 11 月 24 日 · 适用平台：iOS · 开发者：个人开发者（qkunio）</p>
+
+    <p>欢迎使用 BotBot。BotBot 是一款由个人开发者打造的纯原生 iOS 客户端，采用自带 API Key（BYOK）模式直接与 DeepSeek 官方 API 通信。本隐私政策清晰说明应用如何处理你的数据与系统权限。</p>
+
+    <h2>1. 我们不收集任何个人数据</h2>
+    <ul>
+      <li>BotBot <strong>没有自有后端服务器</strong>，不提供账号注册或云端同步服务。</li>
+      <li>开发者不会收集、读取、存储或出售你的姓名、邮箱、API Key、聊天记录、语音数据、附件文件或设备标识符。</li>
+      <li>应用内不集成任何第三方统计分析、广告或跨应用追踪 SDK。</li>
+    </ul>
+
+    <h2>2. 本地数据存储与清除</h2>
+    <p>以下数据仅保存在你的 iOS 设备应用沙盒本地，不会上传至开发者服务器：</p>
+    <ul>
+      <li><strong>API Key 与应用偏好</strong>：通过系统 <code>UserDefaults</code> 保存在本机（包含 API Key、深度思考/联网搜索开关、自动朗读设置、本地昵称等）。</li>
+      <li><strong>对话记录、草稿与附件原件</strong>：以本地文件形式保存在应用沙盒中；通过链接或 ZIP 导入的历史对话也仅在本地解析并保存。</li>
+      <li><strong>完全可控</strong>：你随时可在应用内通过「设置 → 删除所有数据」一键永久清除本机全部聊天记录、草稿、头像、昵称、API Key 及设置，或直接卸载应用以彻底移除本地数据。</li>
+    </ul>
+
+    <h2>3. 与第三方 API 服务的直接通信</h2>
+    <p>当你主动使用以下功能时，你的设备会直接向 DeepSeek 官方服务（<code>https://api.deepseek.com</code>）发起加密 HTTPS 请求：</p>
+    <ul>
+      <li>发送聊天消息、生成对话标题、使用深度思考或联网搜索功能；</li>
+      <li>核验 API Key 有效性及查询账户余额；</li>
+      <li>上传图片或文件附件（DeepSeek Files API）；</li>
+      <li>语音输入识别（DeepSeek ASR）与回复流式朗读（DeepSeek TTS）。</li>
+    </ul>
+    <p>上述传输至 DeepSeek 的内容将受 DeepSeek 的服务条款与隐私政策约束。此外，如果你在聊天中主动粘贴外部历史记录下载链接或点击参考网页链接，设备将直接访问对应链接或通过系统 SafariView 打开网页。</p>
+
+    <h2>4. 系统权限说明</h2>
+    <ul>
+      <li><strong>麦克风权限</strong>：仅在你主动使用语音输入功能时请求，用于录制音频并发送给 DeepSeek 语音识别接口转为文字，不会在后台静默录音。</li>
+      <li><strong>相机权限</strong>：仅在你主动选择拍照添加消息附件时请求。</li>
+      <li><strong>照片图库权限</strong>：仅在你主动选择相册图片作为聊天附件或设置个人本地头像时请求。</li>
+    </ul>
+
+    <h2>5. 儿童隐私</h2>
+    <p>本应用不面向 13 周岁以下儿童（或当地法律规定的同等最低年龄），也不会有意收集任何儿童的个人信息。</p>
+
+    <h2>6. 政策更新与联系我们</h2>
+    <p>如本隐私政策有更新，我们会在此页面发布最新内容并更新生效日期。如果你对本隐私政策有任何疑问或建议，请通过以下页面联系开发者：</p>
+    <p><a href="https://github.com/qkunio/botbot-ios-site/issues" target="_blank" rel="noopener">https://github.com/qkunio/botbot-ios-site/issues</a></p>
+  </article>
+
+  <hr />
+
+  <article id="english">
+    <h1>BotBot Privacy Policy</h1>
+    <p class="meta">Effective Date: November 24, 2026 · Platform: iOS · Developer: Independent Developer (qkunio)</p>
+
+    <p>Thank you for using BotBot. BotBot is a pure native iOS client developed by an independent developer using a Bring Your Own Key (BYOK) architecture that communicates directly with the official DeepSeek API. This Privacy Policy explains how your data and device permissions are handled.</p>
+
+    <h2>1. No Personal Data Collection</h2>
+    <ul>
+      <li>BotBot operates <strong>no developer-hosted backend servers</strong>, user accounts, or cloud sync services.</li>
+      <li>The developer does not collect, access, store, or sell your personal information, API keys, chat history, voice recordings, attachments, or device identifiers.</li>
+      <li>The app contains no third-party analytics, advertising, or cross-app tracking SDKs.</li>
+    </ul>
+
+    <h2>2. On-Device Storage & Data Deletion</h2>
+    <p>All app data is stored strictly inside your iOS device's local sandbox:</p>
+    <ul>
+      <li><strong>API Key & Preferences</strong>: Stored locally via iOS <code>UserDefaults</code> (API key, Deep Thinking/Web Search toggles, read-aloud voice settings, local profile nickname).</li>
+      <li><strong>Conversations, Drafts & Attachments</strong>: Saved locally as files within the app sandbox. Chat history imported via download link or ZIP archive is parsed and stored locally only.</li>
+      <li><strong>Full User Control</strong>: You can permanently wipe all local conversations, drafts, avatar, nickname, API key, and settings anytime via <em>Settings → Delete All Data</em>, or by uninstalling the app.</li>
+    </ul>
+
+    <h2>3. Direct Communication with Third-Party APIs</h2>
+    <p>When you actively initiate requests in the app, your device connects directly via HTTPS to DeepSeek's API (<code>https://api.deepseek.com</code>) for:</p>
+    <ul>
+      <li>Sending chat messages, auto-generating titles, Deep Thinking, and Web Search;</li>
+      <li>Validating your API key and checking account balance;</li>
+      <li>Uploading image or file attachments (DeepSeek Files API);</li>
+      <li>Voice-to-text transcription (DeepSeek ASR) and streaming text-to-speech playback (DeepSeek TTS).</li>
+    </ul>
+    <p>Data transmitted to DeepSeek is governed by DeepSeek's own Terms of Service and Privacy Policy. When you paste an external history archive URL or open cited web links via SafariView, your device connects directly to those URLs.</p>
+
+    <h2>4. Device Permissions</h2>
+    <ul>
+      <li><strong>Microphone</strong>: Requested only when using voice input to record speech for DeepSeek ASR transcription. Never accessed in the background.</li>
+      <li><strong>Camera</strong>: Requested only when taking a photo to attach to a chat message.</li>
+      <li><strong>Photo Library</strong>: Requested only when selecting photos to attach to messages or setting a local profile avatar.</li>
+    </ul>
+
+    <h2>5. Children's Privacy</h2>
+    <p>BotBot is not directed to children under 13 (or the equivalent minimum age in your jurisdiction), and we do not knowingly collect personal information from children.</p>
+
+    <h2>6. Changes & Contact</h2>
+    <p>Updates to this Privacy Policy will be posted on this page with an updated effective date. For questions, support, or privacy inquiries, please contact the developer at:</p>
+    <p><a href="https://github.com/qkunio/botbot-ios-site/issues" target="_blank" rel="noopener">https://github.com/qkunio/botbot-ios-site/issues</a></p>
+  </article>
+</main>
+</body>
+</html>

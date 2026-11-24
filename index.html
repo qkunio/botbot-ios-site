@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>BotBot · 纯净原生的 DeepSeek iOS 客户端</title>
+<meta name="description" content="BotBot 是一款基于纯原生 SwiftUI 打造的 iOS 聊天客户端，直连 DeepSeek 官方 API，无后端、零第三方依赖、数据仅存本机。" />
+<link rel="icon" type="image/svg+xml" href="./whale.svg" />
+<style>
+  :root {
+    --bg: #F6F8FF;
+    --bg-elev: rgba(255, 255, 255, 0.84);
+    --surface: #FFFFFF;
+    --text: #0F172A;
+    --muted: #4E5A78;
+    --subtle: #64748B;
+    --border: rgba(15, 23, 42, 0.08);
+    --accent: #3964FE;
+    --accent-soft: rgba(57, 100, 254, 0.10);
+    --accent-border: rgba(57, 100, 254, 0.22);
+    --shadow: 0 18px 48px rgba(27, 52, 136, 0.08);
+    --orb1: rgba(114, 155, 243, 0.24);
+    --orb2: rgba(57, 100, 254, 0.16);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #080B14;
+      --bg-elev: rgba(20, 25, 40, 0.82);
+      --surface: #121726;
+      --text: #F8FAFC;
+      --muted: #A9B7D6;
+      --subtle: #8090B2;
+      --border: rgba(255, 255, 255, 0.10);
+      --accent: #6EA1FF;
+      --accent-soft: rgba(110, 161, 255, 0.14);
+      --accent-border: rgba(110, 161, 255, 0.28);
+      --shadow: 0 22px 54px rgba(0, 0, 0, 0.45);
+      --orb1: rgba(57, 100, 254, 0.22);
+      --orb2: rgba(114, 155, 243, 0.14);
+    }
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "PingFang SC", "Hiragino Sans GB", "Helvetica Neue", sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+  .ambient {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+  }
+  .ambient::before, .ambient::after {
+    content: "";
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(110px);
+  }
+  .ambient::before {
+    width: 620px; height: 620px;
+    top: -220px; left: -120px;
+    background: var(--orb1);
+  }
+  .ambient::after {
+    width: 560px; height: 560px;
+    bottom: -200px; right: -120px;
+    background: var(--orb2);
+  }
+  .wrap {
+    position: relative;
+    z-index: 1;
+    max-width: 1020px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  /* Nav */
+  nav {
+    position: sticky;
+    top: 14px;
+    z-index: 50;
+    margin: 14px auto 0;
+    max-width: 972px;
+    padding: 10px 18px;
+    border-radius: 999px;
+    background: var(--bg-elev);
+    border: 1px solid var(--border);
+    box-shadow: 0 8px 28px rgba(15, 23, 42, 0.06);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    color: var(--text);
+    font-weight: 800;
+    font-size: 18px;
+    letter-spacing: -0.02em;
+  }
+  .brand img {
+    width: 32px;
+    height: 32px;
+    border-radius: 9px;
+    background: #FFFFFF;
+    box-shadow: 0 2px 8px rgba(57, 100, 254, 0.18);
+  }
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    font-size: 14px;
+    font-weight: 600;
+  }
+  .nav-links a {
+    color: var(--muted);
+    text-decoration: none;
+    transition: color .18s ease;
+  }
+  .nav-links a:hover { color: var(--accent); }
+  .lang-btn {
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text);
+    padding: 6px 12px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 650;
+    cursor: pointer;
+  }
+
+  /* Hero */
+  .hero {
+    padding: 84px 0 64px;
+    text-align: center;
+  }
+  .app-icon {
+    width: 112px;
+    height: 112px;
+    border-radius: 28px;
+    background: #FFFFFF;
+    margin: 0 auto 28px;
+    padding: 4px;
+    box-shadow: 0 20px 52px rgba(57, 100, 254, 0.22), 0 0 0 1px rgba(255, 255, 255, 0.9);
+    overflow: hidden;
+  }
+  .app-icon img { width: 100%; height: 100%; display: block; border-radius: 24px; }
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 16px;
+    border-radius: 999px;
+    background: var(--accent-soft);
+    border: 1px solid var(--accent-border);
+    color: var(--accent);
+    font-size: 13px;
+    font-weight: 650;
+    margin-bottom: 20px;
+  }
+  h1 {
+    font-size: clamp(40px, 6vw, 64px);
+    font-weight: 850;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+    margin-bottom: 18px;
+  }
+  h1 span {
+    background: linear-gradient(125deg, #2753FE 0%, #6EA1FF 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .lead {
+    max-width: 660px;
+    margin: 0 auto 32px;
+    font-size: clamp(16px, 2.2vw, 20px);
+    color: var(--muted);
+  }
+  .cta-row {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 14px;
+    margin-bottom: 34px;
+  }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 13px 24px;
+    border-radius: 999px;
+    font-size: 15px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: transform .15s ease, box-shadow .15s ease;
+  }
+  .btn:hover { transform: translateY(-1px); }
+  .btn-primary {
+    background: linear-gradient(135deg, #3964FE, #5B8BFF);
+    color: #FFFFFF;
+    box-shadow: 0 12px 28px rgba(57, 100, 254, 0.30);
+  }
+  .btn-secondary {
+    background: var(--bg-elev);
+    color: var(--text);
+    border: 1px solid var(--border);
+    backdrop-filter: blur(16px);
+  }
+  .pills {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .pill {
+    padding: 7px 14px;
+    border-radius: 999px;
+    background: var(--bg-elev);
+    border: 1px solid var(--border);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--muted);
+  }
+
+  /* Sections */
+  section { padding: 48px 0; }
+  .section-head {
+    text-align: center;
+    margin-bottom: 34px;
+  }
+  .section-head h2 {
+    font-size: clamp(26px, 4vw, 36px);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    margin-bottom: 10px;
+  }
+  .section-head p {
+    color: var(--muted);
+    font-size: 16px;
+  }
+
+  /* Feature Bento Grid */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 18px;
+  }
+  .card {
+    background: var(--bg-elev);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    padding: 26px;
+    box-shadow: var(--shadow);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+  }
+  .card-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 14px;
+    background: var(--accent-soft);
+    border: 1px solid var(--accent-border);
+    color: var(--accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 16px;
+  }
+  .card h3 {
+    font-size: 18px;
+    font-weight: 750;
+    margin-bottom: 8px;
+  }
+  .card p {
+    font-size: 14.5px;
+    color: var(--muted);
+    line-height: 1.65;
+  }
+
+  /* Privacy Summary Card */
+  .privacy-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 28px;
+    padding: 36px;
+    box-shadow: var(--shadow);
+  }
+  .privacy-box h2 {
+    font-size: 28px;
+    font-weight: 800;
+    margin-bottom: 8px;
+  }
+  .privacy-meta {
+    font-size: 13.5px;
+    color: var(--subtle);
+    margin-bottom: 24px;
+  }
+  .privacy-box h3 {
+    font-size: 17px;
+    font-weight: 750;
+    margin: 22px 0 8px;
+  }
+  .privacy-box p, .privacy-box li {
+    font-size: 15px;
+    color: var(--muted);
+    line-height: 1.75;
+  }
+  .privacy-box ul {
+    padding-left: 20px;
+    margin-top: 6px;
+  }
+  .privacy-box li { margin-bottom: 6px; }
+  .privacy-box a { color: var(--accent); text-decoration: none; }
+  .privacy-box a:hover { text-decoration: underline; }
+
+  footer {
+    padding: 40px 0 56px;
+    text-align: center;
+    color: var(--subtle);
+    font-size: 13.5px;
+  }
+  footer a {
+    color: var(--accent);
+    text-decoration: none;
+  }
+  footer a:hover { text-decoration: underline; }
+
+  [data-lang="en"] { display: none; }
+  body.en [data-lang="zh"] { display: none; }
+  body.en [data-lang="en"] { display: block; }
+  body.en span[data-lang="en"], body.en a[data-lang="en"] { display: inline-flex; }
+  span[data-lang="zh"], a[data-lang="zh"] { display: inline-flex; }
+  body.en span[data-lang="zh"], body.en a[data-lang="zh"] { display: none; }
+
+  @media (max-width: 640px) {
+    nav { padding: 9px 14px; }
+    .nav-links { gap: 12px; font-size: 13px; }
+    .privacy-box { padding: 24px 20px; }
+  }
+</style>
+</head>
+<body>
+<div class="ambient"></div>
+
+<div class="wrap">
+  <nav>
+    <a class="brand" href="#top">
+      <img src="./whale.svg" alt="BotBot" />
+      <span>BotBot</span>
+    </a>
+    <div class="nav-links">
+      <a href="#features" data-lang="zh">功能特性</a>
+      <a href="#features" data-lang="en">Features</a>
+      <a href="./privacy.html" data-lang="zh">隐私政策</a>
+      <a href="./privacy.html" data-lang="en">Privacy</a>
+      <a href="https://github.com/qkunio/botbot-ios-site/issues" target="_blank" rel="noopener" data-lang="zh">反馈支持</a>
+      <a href="https://github.com/qkunio/botbot-ios-site/issues" target="_blank" rel="noopener" data-lang="en">Support</a>
+      <button class="lang-btn" id="langToggle" type="button">EN</button>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <header class="hero" id="top">
+    <div class="app-icon">
+      <img src="./whale.svg" alt="BotBot App Icon" />
+    </div>
+    <div class="badge">
+      <span data-lang="zh">纯原生 SwiftUI · 面向 iOS 26+ 打造</span>
+      <span data-lang="en">Pure SwiftUI · Crafted for iOS 26+</span>
+    </div>
+    <h1>
+      <span data-lang="zh">纯净原生的 <span>DeepSeek</span> 随身助手</span>
+      <span data-lang="en">A Pure Native <span>DeepSeek</span> Client for iOS</span>
+    </h1>
+    <p class="lead" data-lang="zh">
+      BotBot 是一款无中间后端、零第三方依赖的自带 API Key（BYOK）原生 iOS 聊天客户端。直连 DeepSeek 官方接口，对话记录与密钥完全留在你的设备。
+    </p>
+    <p class="lead" data-lang="en">
+      BotBot is a zero-backend, zero-third-party-dependency BYOK native iOS chat client. Connect directly to the official DeepSeek API while keeping your keys and conversations strictly on-device.
+    </p>
+
+    <div class="cta-row">
+      <a class="btn btn-primary" href="#features">
+        <span data-lang="zh">探索核心特性</span>
+        <span data-lang="en">Explore Features</span>
+      </a>
+      <a class="btn btn-secondary" href="./privacy.html">
+        <span data-lang="zh">查看隐私政策</span>
+        <span data-lang="en">Read Privacy Policy</span>
+      </a>
+    </div>
+
+    <div class="pills">
+      <div class="pill" data-lang="zh">⚡ 零后端直连官方 API</div>
+      <div class="pill" data-lang="zh">🔒 数据仅存本机</div>
+      <div class="pill" data-lang="zh">🎙️ 原生语音输入与流式朗读</div>
+      <div class="pill" data-lang="zh">🌙 浅色 / 深色模式自适应</div>
+      <div class="pill" data-lang="en">⚡ Direct to Official DeepSeek API</div>
+      <div class="pill" data-lang="en">🔒 Local-First Privacy</div>
+      <div class="pill" data-lang="en">🎙️ Native Voice ASR & Streaming TTS</div>
+      <div class="pill" data-lang="en">🌙 Adaptive Light & Dark Mode</div>
+    </div>
+  </header>
+
+  <!-- FEATURES -->
+  <section id="features">
+    <div class="section-head">
+      <h2 data-lang="zh">克制架构，实力毫不妥协</h2>
+      <h2 data-lang="en">Minimal Architecture, Full Capability</h2>
+      <p data-lang="zh">每一处交互都贴合 iOS 原生质感，专注纯粹的深度对话体验。</p>
+      <p data-lang="en">Designed with native iOS polish for focused, uninterrupted deep conversations.</p>
+    </div>
+
+    <div class="grid">
+      <div class="card">
+        <div class="card-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+        </div>
+        <h3 data-lang="zh">零后端直连与一键迁移</h3>
+        <h3 data-lang="en">Direct Connection & Easy Import</h3>
+        <p data-lang="zh">粘贴 DeepSeek API Key 即可核验账户余额并立即对话；支持通过链接或本地 ZIP 压缩包无损导入历史聊天记录与图片附件。</p>
+        <p data-lang="en">Paste your DeepSeek API Key with instant balance verification. Seamlessly import chat history and image attachments via link or ZIP archive.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+        </div>
+        <h3 data-lang="zh">深度思考与智能搜索</h3>
+        <h3 data-lang="en">Deep Thinking & Web Search</h3>
+        <p data-lang="zh">完整支持实时 SSE 流式思考展示、思考用时统计与折叠展开，同时支持联网智能搜索、链接阅读及可点击的来源引用列表。</p>
+        <p data-lang="en">Real-time SSE reasoning stream with collapsible thinking timer, paired with web search, link reading, and interactive source citations.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="18" r="3"/><circle cx="6" cy="6" r="3"/><path d="M6 21V9a9 9 0 0 0 9 9"/></svg>
+        </div>
+        <h3 data-lang="zh">多分支对话树</h3>
+        <h3 data-lang="en">Branching Conversations</h3>
+        <p data-lang="zh">随时编辑历史提问、重新生成回答或继续未完成的输出，完整保留不同推理路径，自由切换任意版本回复。</p>
+        <p data-lang="en">Edit any prompt, regenerate responses, or continue interrupted replies. Keep every branch intact and switch versions effortlessly.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/></svg>
+        </div>
+        <h3 data-lang="zh">原生语音输入与流式朗读</h3>
+        <h3 data-lang="en">Native Voice Input & Read-Aloud</h3>
+        <p data-lang="zh">支持麦克风语音录音识别（DeepSeek ASR）与多音色流式回复朗读（DeepSeek TTS），自然流畅，开口即可交流。</p>
+        <p data-lang="en">Record speech directly with DeepSeek ASR and listen to replies via low-latency streaming DeepSeek TTS with selectable voices.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+        </div>
+        <h3 data-lang="zh">专业排版与多格式附件</h3>
+        <h3 data-lang="en">Rich Markdown & Attachments</h3>
+        <p data-lang="zh">本地集成代码语法高亮（Prism）、数学公式（KaTeX）与自适应表格，并支持拍照、相册图片与本地文件直传对话。</p>
+        <p data-lang="en">Bundled Prism code highlighting, KaTeX math formulas, adaptive tables, plus camera, photo library, and file uploads via Files API.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        </div>
+        <h3 data-lang="zh">本机隐私与可控数据</h3>
+        <h3 data-lang="en">On-Device Privacy & Full Control</h3>
+        <p data-lang="zh">不集成广告、统计或追踪 SDK，无自有后端中转。所有会话、草稿、附件与密钥均保存在本地沙盒，并支持一键彻底清除。</p>
+        <p data-lang="en">No ads, no analytics, no intermediary servers. All sessions, drafts, attachments, and keys stay in your local sandbox and can be wiped with one tap.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRIVACY SUMMARY -->
+  <section id="privacy">
+    <div class="privacy-box">
+      <div data-lang="zh">
+        <h2>隐私政策摘要</h2>
+        <p class="privacy-meta">生效日期：2026 年 11 月 24 日 · 适用应用：BotBot（iOS）· 开发者：个人开发者（qkunio） · <a href="./privacy.html">查看完整独立隐私政策页 →</a></p>
+        <p>BotBot 是一款无自有后端的自带 API Key（BYOK）本地客户端，我们高度重视你的隐私与数据控制权：</p>
+        <ul>
+          <li><strong>零收集与零追踪</strong>：开发者不运营任何中转服务器，不收集你的个人身份信息、聊天记录、API Key 或使用行为统计，应用内不含第三方广告或追踪 SDK。</li>
+          <li><strong>本地存储</strong>：你的 DeepSeek API Key、偏好设置、自定义头像昵称、会话记录与附件原件仅保存在你的 iOS 设备本地沙盒中，随时可通过「设置 → 删除所有数据」永久清空。</li>
+          <li><strong>直接通信</strong>：仅当你主动发送消息、上传附件、使用语音输入/朗读或核验余额时，相应内容会直接发送至你配置的 DeepSeek 官方接口（<code>https://api.deepseek.com</code>），由 DeepSeek 按其隐私政策处理。</li>
+          <li><strong>系统权限</strong>：麦克风（仅用于语音输入录音）、相机（仅用于拍照添加消息附件）、相册（仅用于选择照片作为附件或头像），均仅在主动触发对应功能时请求。</li>
+          <li><strong>联系与支持</strong>：如有隐私疑问或使用反馈，请通过 <a href="https://github.com/qkunio/botbot-ios-site/issues" target="_blank" rel="noopener">GitHub Issues</a> 联系开发者。</li>
+        </ul>
+      </div>
+
+      <div data-lang="en">
+        <h2>Privacy Policy Summary</h2>
+        <p class="privacy-meta">Effective Date: November 24, 2026 · App: BotBot (iOS) · Developer: Independent Developer (qkunio) · <a href="./privacy.html">Open Standalone Privacy Policy →</a></p>
+        <p>BotBot is a local-first BYOK (Bring Your Own Key) client with no developer backend. We respect your privacy and data ownership:</p>
+        <ul>
+          <li><strong>No Collection or Tracking</strong>: The developer operates no intermediary servers and collects no personal data, chat logs, API keys, or analytics. The app contains no third-party ad or tracking SDKs.</li>
+          <li><strong>Local Storage</strong>: Your DeepSeek API key, preferences, profile avatar/nickname, conversations, and attachments are stored strictly inside your device's local sandbox and can be permanently erased anytime via <em>Settings → Delete All Data</em>.</li>
+          <li><strong>Direct API Requests</strong>: When you send messages, upload attachments, use voice input/read-aloud, or check account balance, relevant data is transmitted directly from your device to DeepSeek's API (<code>https://api.deepseek.com</code>), governed by DeepSeek's Privacy Policy.</li>
+          <li><strong>Device Permissions</strong>: Microphone (voice input), Camera (taking photos to attach), and Photo Library (selecting photos for attachments or avatar) are requested only when you actively use those features.</li>
+          <li><strong>Support & Contact</strong>: For privacy questions or feedback, please reach out via <a href="https://github.com/qkunio/botbot-ios-site/issues" target="_blank" rel="noopener">GitHub Issues</a>.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <p>
+      © 2026 BotBot · Developed by qkunio ·
+      <a href="./privacy.html">隐私政策 / Privacy Policy</a> ·
+      <a href="https://github.com/qkunio/botbot-ios-site/issues" target="_blank" rel="noopener">反馈与支持 / Support</a>
+    </p>
+  </footer>
+</div>
+
+<script>
+  const btn = document.getElementById('langToggle');
+  btn.addEventListener('click', () => {
+    const isEn = document.body.classList.toggle('en');
+    btn.textContent = isEn ? '中文' : 'EN';
+    document.documentElement.lang = isEn ? 'en' : 'zh-CN';
+  });
+</script>
+</body>
+</html>
